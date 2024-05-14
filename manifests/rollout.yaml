@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: argocd-web-app
+  labels:
+    app: argocd-web-app
+spec:
+  replicas: 3
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {duration: 10s}
+      - setWeight: 50
+      - pause: {duration: 10s}
+  selector:
+    matchLabels:
+      app: argocd-web-app
+  template:
+    metadata:
+      labels:
+        app: argocd-web-app
+    spec:
+      containers:
+      - name: argocd-web-app
+        image: yash37158/argocd-web-app:latest
+        ports:
+        - containerPort: 80
